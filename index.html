@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      #container {
+        padding: 8rem 16rem;
+      }
+
+      h1 {
+        text-align: center;
+        margin: 2rem 0;
+      }
+
+      form {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 2rem 0;
+      }
+
+      input[type="text"] {
+        height: 2rem;
+        flex: 1;
+        padding: 1rem;
+        font-size: 1.2rem;
+        border-radius: 0.5rem;
+        border: none;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      button[type="submit"] {
+        height: 4rem;
+        padding: 0 1.2rem;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+        border-radius: 0.5rem;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+
+      #conversation {
+        margin: 2rem;
+      }
+
+      p {
+        margin: 0.5rem 0;
+      }
+
+      .user {
+        color: #007bff;
+        font-weight: bold;
+      }
+
+      .chatbot {
+        color: #e02d2d;
+        font-weight: bold;
+        width: 50%;
+      }
+    </style>
+
+    <title>دردش مع البوت chatbot</title>
+  </head>
+  <body>
+    <div id="container">
+      <h1>دردش مع البوت chatbot</h1>
+      <div id="conversation"></div>
+      <form>
+        <input type="text" id="message" placeholder="اكتب رسالتك هنا" />
+        <button type="submit">إرسال</button>
+      </form>
+    </div>
+    <script>
+      const conversationElem = document.getElementById("conversation");
+      const messageInput = document.getElementById("message");
+
+      // Send message to chatbot on form submit
+      document
+        .querySelector("form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const message = messageInput.value;
+          messageInput.value = "";
+
+          // Send message to server and wait for response
+          const response = await fetch("/message", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+          }).then((res) => res.json());
+
+          // Add user message and chatbot response to conversation
+          conversationElem.innerHTML += `<p class="user">أنت: ${message}</p>`;
+          conversationElem.innerHTML += `<p class="chatbot">البوت: ${response.message}</p>`;
+          console.log(response.message);
+        });
+    </script>
+  </body>
+</html>
